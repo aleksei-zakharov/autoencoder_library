@@ -1,4 +1,5 @@
-GLOBAL_DATA_PATH = '../data/'
+# because we run ipynb from notebooks/vol/ or notebooks/mnist folders, we need to go 2 levels up
+GLOBAL_DATA_PATH = '../../data/'  
 
 
 READ_RAW_DATA_FILE_PATH = GLOBAL_DATA_PATH + 'raw/TR_Data.xlsx'
