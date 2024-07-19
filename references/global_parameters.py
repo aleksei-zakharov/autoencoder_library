@@ -1,0 +1,7 @@
+GLOBAL_DATA_PATH = '../data/'
+
+
+READ_RAW_DATA_FILE_PATH = GLOBAL_DATA_PATH + 'raw/TR_Data.xlsx'
+READ_RAW_DATA_FILE_SHEET_NAME = 'DownloadedDataNoFormula'
+SAVE_ATM_VOLS_FILE_PATH = GLOBAL_DATA_PATH + 'processed/atm_vol.xlsx'
+SAVE_ATM_VOLS_FILE_SHEET_NAME = 'atm_vol'
