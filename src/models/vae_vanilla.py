@@ -32,7 +32,6 @@ class VaeVanilla(Model):
         self._build()
 
     def call(self, inputs):
-        # Encoder
         __, __, z = self.encoder(inputs)  # returns z_mean, z_log_var, z
         reconstruction = self.decoder(z)  # the output of our autoencoder
         return reconstruction
@@ -49,7 +48,7 @@ class VaeVanilla(Model):
 
     def train_step(self, data):
         with tf.GradientTape() as tape:
-            # reconstruction loss
+            # Reconstruction loss
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
             if self.loss_type == 'bce':
@@ -57,15 +56,15 @@ class VaeVanilla(Model):
             elif self.loss_type == 'mse':
                 reconstruction_loss = binary_crossentropy(Flatten()(data), Flatten()(reconstruction))
                 reconstruction_loss *= np.prod(self.input_shape)
-            # kullback-leibler loss
+            # Kullback-leibler loss
             kl_loss = -0.5 * (1 + z_log_var - ops.square(z_mean) - ops.exp(z_log_var))
             kl_loss = self.beta * ops.sum(kl_loss, axis=1)
-            # total loss
+            # Total loss
             total_loss = ops.mean(reconstruction_loss + kl_loss)
-        # gradient calculation
+        # Gradient calculation
         grads = tape.gradient(total_loss, self.trainable_weights)
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
-        # update losses
+        # Update losses
         self.total_loss_tracker.update_state(total_loss)
         self.reconstruction_loss_tracker.update_state(reconstruction_loss)
         self.kl_loss_tracker.update_state(kl_loss)
@@ -102,7 +101,7 @@ class VaeVanilla(Model):
         self.decoder = Model(inputs=decoded_input, 
                              outputs=decoded)
 
-        # calculate losses as mean values over all samples
+        # Calculate losses as mean values over all samples
         self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
         self.reconstruction_loss_tracker = keras.metrics.Mean(name="reconstruction_loss")
         self.kl_loss_tracker = keras.metrics.Mean(name="kl_loss")

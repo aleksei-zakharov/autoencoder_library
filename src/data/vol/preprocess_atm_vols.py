@@ -16,7 +16,7 @@ def preprocess_atm_vols():
     df = pd.read_excel(READ_RAW_DATA_FILE_PATH, sheet_name=READ_RAW_DATA_FILE_SHEET_NAME)
     df = df.loc[1:,:]  # filter the first row without numbers
 
-    # dataframe with dates as indexes, different option/swap tenors as columns and vols as data
+    # Dataframe with dates as indexes, different option/swap tenors as columns and vols as data
     df_vols = pd.DataFrame()  
 
     n_cols = len(df.columns)
@@ -26,7 +26,7 @@ def preprocess_atm_vols():
         col_name = df.columns[2 * i]
 
         if col_name.find('ATM') != - 1:  # if column name contains 'ATM'
-            # add 1 column to df_vols dataframe
+            # Add 1 column to df_vols dataframe
             data = df.iloc[:,vol_col_num]
             index = df.iloc[:,date_col_num].infer_objects()
             df_vol = pd.DataFrame(data=list(data),
@@ -35,14 +35,14 @@ def preprocess_atm_vols():
             df_vol.dropna(axis='index', how='any', inplace=True)
             df_vols = pd.concat([df_vols, df_vol], join ='outer', axis=1)
 
-    # drop NaN data
+    # Drop NaN data
     df_vols.dropna(axis='index', how='any', inplace=True)
 
-    # rename the columns
+    # Rename the columns
     df_vols.columns = [tenor_tenor(x) for x in df_vols.columns]
     # df = df.reindex(sorted(df.columns), axis=1)  # sorting of columns
 
-    # export to the file
+    # Export to the file
     df_vols.to_excel(SAVE_ATM_VOLS_FILE_PATH, sheet_name=SAVE_ATM_VOLS_FILE_SHEET_NAME)
 
 
