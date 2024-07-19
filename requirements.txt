@@ -2,3 +2,5 @@ ipykernel
 matplotlib
 pandas
 openpyxl
+keras
+tensorflow
