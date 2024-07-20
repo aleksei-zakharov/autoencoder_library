@@ -139,5 +139,24 @@ class VaeVanilla(Model):
         self.kl_loss_tracker = keras.metrics.Mean(name="kl_loss")
 
 
+    def get_config(self):   # to save a model to a file
+        config = super().get_config()
+        config.update({
+            'input_shape': self.input_shape,
+            'hidden_layers_nodes': self.hidden_layers_nodes,
+            'latent_space_dim': self.latent_space_dim,
+            'loss_type': self.loss_type,
+            'beta': self.beta
+        })
+        return config
+
+
+    @classmethod  # to save a model to a file
+    def from_config(cls, config):
+        expected_args = ['input_shape', 'hidden_layers_nodes', 'latent_space_dim', 'loss_type', 'beta']
+        filtered_config = {k: v for k, v in config.items() if k in expected_args}
+        return cls(**filtered_config)
+
+
 if __name__ == "__main__":
     pass
