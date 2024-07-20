@@ -2,16 +2,28 @@ import matplotlib.pyplot as plt
 from matplotlib import cm  # to change color scheme
 
 
-def plot_latent_space_2d_values(model, x, y=None):
+def plot_latent_space_2d_values(model, 
+                                x,
+                                y=None,
+                                vae_latent_type=None):
     # Because our latent space is two-dimensional, there are a few cool visualizations that can be done at this point. One is to look at the neighborhoods of different classes on the latent 2D plane
+    if vae_latent_type is None:
+        vae_latent_type = 'z'
+
     if model.model_type == 'vae':
-        x_encoded, __, __ = model.encoder.predict(x, verbose=0)  # z_mean, z_var, z
+        if vae_latent_type == 'z_mean':
+            x_encoded, __, __ = model.encoder.predict(x, verbose=0)  # z_mean, z_logvar, z
+        elif vae_latent_type == 'z_logvar':
+            __, x_encoded, __ = model.encoder.predict(x, verbose=0)  # z_mean, z_logvar, z
+        elif vae_latent_type == 'z':
+            __, __, x_encoded = model.encoder.predict(x, verbose=0)  # z_mean, z_logvar, z
     elif model.model_type == 'ae':
         x_encoded = model.encoder.predict(x, verbose=0)  # z
+
     plt.figure(figsize=(12, 6))
     plt.xlabel('first latent space variable')
     plt.ylabel('second latent space variable')
-    plt.title('Latent space distributions for each of 10 digits of real data')
+    plt.title('Latent space (' + vae_latent_type + ' values) of real data')
     if y is None:
         plt.scatter(x_encoded[:,0], x_encoded[:,1], s=1)  # s=2 initially
     else:
