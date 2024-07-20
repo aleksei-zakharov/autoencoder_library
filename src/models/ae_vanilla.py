@@ -24,7 +24,7 @@ class AeVanilla(Model):
         
         self.encoder = None
         self.decoder = None
-
+        self.model_type = 'ae'  # to plot functions universal for vae and ae
         self._hidden_layers_num = len(hidden_layers_nodes)
         self._build()
 
@@ -44,21 +44,39 @@ class AeVanilla(Model):
             # Loss
             predictions = self.decoder(self.encoder(data))
             if self.loss_type == 'bce':
-                loss = ops.mean(ops.square(Flatten()(data) - Flatten()(predictions)), axis=1)
+                total_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(predictions)), axis=1)
             elif self.loss_type == 'mse':
-                loss = binary_crossentropy(Flatten()(data), Flatten()(predictions))
-                loss *= np.prod(self.input_shape)
-            loss = ops.mean(loss)
+                total_loss = binary_crossentropy(Flatten()(data), Flatten()(predictions))
+                total_loss *= np.prod(self.input_shape)
+            total_loss = ops.mean(total_loss)
         # Gradient calculation
-        grads = tape.gradient(loss, self.trainable_weights)
+        grads = tape.gradient(total_loss, self.trainable_weights)
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
         # Update losses
-        self.loss_tracker.update_state(loss)
+        self.loss_tracker.update_state(total_loss)
         return {
-                "loss": self.loss_tracker.result()
+                "total_loss": self.loss_tracker.result()
                 }
 
-    
+
+    def test_step(self, data):
+        # without this step validation_data=(x_test, x_test) provided the ValueError: No loss to compute. Provide a loss argument in compile().
+        with tf.GradientTape():
+            # Loss
+            predictions = self.decoder(self.encoder(data))
+            if self.loss_type == 'bce':
+                total_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(predictions)), axis=1)
+            elif self.loss_type == 'mse':
+                total_loss = binary_crossentropy(Flatten()(data), Flatten()(predictions))
+                total_loss *= np.prod(self.input_shape)
+            total_loss = ops.mean(total_loss)
+        # Update losses
+        self.loss_tracker.update_state(total_loss)
+        return {
+                "total_loss": self.loss_tracker.result()
+                }
+
+
     def _build(self):
         keras.utils.set_random_seed(0)
         input_image = Input(shape=(self.input_shape))  
