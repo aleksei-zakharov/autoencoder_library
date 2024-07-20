@@ -27,15 +27,16 @@ class VaeVanilla(Model):
         
         self.encoder = None
         self.decoder = None
-
+        self.model_type = 'vae'  # to plot functions universal for vae and ae
         self._hidden_layers_num = len(hidden_layers_nodes)
         self._build()
+
 
     def call(self, inputs):
         __, __, z = self.encoder(inputs)  # returns z_mean, z_log_var, z
         reconstruction = self.decoder(z)  # the output of our autoencoder
         return reconstruction
-    
+
 
     @property
     def metrics(self):  # metrics that we track during the training
@@ -46,7 +47,7 @@ class VaeVanilla(Model):
         ]
 
 
-    def train_step(self, data):
+    def train_step(self, data):  # data is 1 object - x_train digits
         with tf.GradientTape() as tape:
             # Reconstruction loss
             z_mean, z_log_var, z = self.encoder(data)
@@ -75,14 +76,43 @@ class VaeVanilla(Model):
                 }
 
 
+    def test_step(self, data):  # data is 1 object - x_train digits
+        # the same as train step but there is no applying gradients here
+        # without this step validation_data=(x_test, x_test) provided the ValueError: No loss to compute. Provide a loss argument in compile().
+        with tf.GradientTape():
+            # Reconstruction loss
+            z_mean, z_log_var, z = self.encoder(data)
+            reconstruction = self.decoder(z)
+            if self.loss_type == 'bce':
+                reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)), axis=1)
+            elif self.loss_type == 'mse':
+                reconstruction_loss = binary_crossentropy(Flatten()(data), Flatten()(reconstruction))
+                reconstruction_loss *= np.prod(self.input_shape)
+            # Kullback-leibler loss
+            kl_loss = -0.5 * (1 + z_log_var - ops.square(z_mean) - ops.exp(z_log_var))
+            kl_loss = self.beta * ops.sum(kl_loss, axis=1)
+            # Total loss
+            total_loss = ops.mean(reconstruction_loss + kl_loss)
+        # Update losses
+        self.total_loss_tracker.update_state(total_loss)
+        self.reconstruction_loss_tracker.update_state(reconstruction_loss)
+        self.kl_loss_tracker.update_state(kl_loss)
+        return {
+                "total_loss": self.total_loss_tracker.result(),
+                "reconstruction_loss": self.reconstruction_loss_tracker.result(),
+                "kl_loss": self.kl_loss_tracker.result(),
+                }
+    
+
     def _build(self):
         keras.utils.set_random_seed(0)
         input_image = Input(shape=(self.input_shape))  
         # Create a graph of calculation for encoder using keras.layers.Dense layers
         encoded = input_image
         encoded = Flatten()(encoded)
-        for i in range(self._hidden_layers_num):
-            encoded = Dense(self.hidden_layers_nodes[i], activation='relu')(encoded)  
+
+        for nodes in self.hidden_layers_nodes:
+            encoded = Dense(nodes, activation='relu')(encoded)  
 
         z_mean = Dense(self.latent_space_dim)(encoded)  # can be from -inf to +inf
         z_log_var = Dense(self.latent_space_dim)(encoded)  # can be from -inf to +inf
@@ -93,8 +123,10 @@ class VaeVanilla(Model):
         # Create a graph of calculation for decoder
         decoded_input = Input(shape=(self.latent_space_dim,))
         decoded = decoded_input
-        for i in range(self._hidden_layers_num-1, -1, -1):  # reverse order of hidden layers
-            decoded = Dense(self.hidden_layers_nodes[i], activation='relu')(decoded)  # because inputs are from 0 to 1
+        
+        for nodes in reversed(self.hidden_layers_nodes):  # reverse order of hidden layers
+            decoded = Dense(nodes, activation='relu')(decoded)  # because inputs are from 0 to 1
+    
         flatten_input_dim = np.prod(self.input_shape)
         decoded = Dense(flatten_input_dim, activation='sigmoid')(decoded)
         decoded = Reshape(self.input_shape)(decoded)
