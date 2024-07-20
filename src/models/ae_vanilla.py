@@ -8,13 +8,14 @@ from keras.losses import binary_crossentropy
 from keras import ops
 
 
-class AeVanilla(Model):
+class AeVanilla(keras.Model):
     def __init__(self,
                  input_shape,
                  hidden_layers_nodes,  # list,
                  latent_space_dim,
                  loss_type='bce'  # bce or mse
-                 ):  
+                 ):   
+         
         super().__init__()
 
         self.input_shape = input_shape
@@ -102,6 +103,24 @@ class AeVanilla(Model):
         # Calculate losses as mean values over all samples
         self.loss_tracker = keras.metrics.Mean(name="loss")
         
+
+    def get_config(self):   # to save a model to a file
+        config = super().get_config()
+        config.update({
+            'input_shape': self.input_shape,
+            'hidden_layers_nodes': self.hidden_layers_nodes,
+            'latent_space_dim': self.latent_space_dim,
+            'loss_type': self.loss_type
+        })
+        return config
+
+
+    @classmethod  # to save a model to a file
+    def from_config(cls, config):
+        expected_args = ['input_shape', 'hidden_layers_nodes', 'latent_space_dim', 'loss_type']
+        filtered_config = {k: v for k, v in config.items() if k in expected_args}
+        return cls(**filtered_config)
+
 
 if __name__ == "__main__":
     pass
