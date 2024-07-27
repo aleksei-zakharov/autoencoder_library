@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
 def error_histograms(model,
                      data,
-                     normalizer):
+                     normalizer,
+                     save_name=None):
 
 
     data_norm = normalizer.normalize(data)
@@ -28,7 +30,20 @@ def error_histograms(model,
     ax[1].hist(max_errors, 40)
     ax[1].set_title('distribution of the Max Error between real data and predictions')
     ax[1].set_xlabel('bp')
-    plt.show()
 
+
+    # Save plot
+    if save_name is not None:
+        # Make a folder
+        folder_path = '../../reports/vol'
+        os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
+        # Save plot if the file doesn't exist
+        file_path = os.path.join(folder_path, save_name + 'error_histograms.png')
+        # if os.path.exists(file_path):
+        #     raise FileExistsError(f"The file '{file_path}' already exists.")
+        # else:
+        plt.savefig(file_path)
+    # Display the plot
+    plt.show()
 
     # ADD SAVING TO THE FOLDER
