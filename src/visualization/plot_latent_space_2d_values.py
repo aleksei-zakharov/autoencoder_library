@@ -30,7 +30,7 @@ def plot_latent_space_2d_values(model,
         plt.scatter(x_encoded[:,0], x_encoded[:,1], s=1)  # s=2 initially
     else:
         plt.scatter(x_encoded[:,0], x_encoded[:,1], c=y, s=1, cmap=cm.rainbow)  # s=2 initially
-    plt.colorbar()
+        plt.colorbar()
 
     # Save plot
     if save_name is not None:
