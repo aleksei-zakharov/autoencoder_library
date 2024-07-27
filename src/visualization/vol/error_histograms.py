@@ -39,11 +39,6 @@ def error_histograms(model,
         os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
         # Save plot if the file doesn't exist
         file_path = os.path.join(folder_path, save_name + 'error_histograms.png')
-        # if os.path.exists(file_path):
-        #     raise FileExistsError(f"The file '{file_path}' already exists.")
-        # else:
         plt.savefig(file_path)
     # Display the plot
     plt.show()
-
-    # ADD SAVING TO THE FOLDER
