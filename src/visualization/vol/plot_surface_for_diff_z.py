@@ -67,6 +67,3 @@ def plot_surface_for_diff_z(model,
         os.remove(filename)
     # Open gif
     display(Image(folder_path + name + '.gif'))
-
-
-# ADD SAVING TO THE FOLDER
