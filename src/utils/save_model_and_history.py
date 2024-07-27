@@ -3,10 +3,11 @@ import pickle
 
 
 def save_model_and_history(model,
-                           history,
-                           save_name):
+                           history,  
+                           save_name,
+                           data_type='mnist'):  # 'mnist' or 'vol'
     
-    folder_path = os.path.join("../../models/mnist", save_name)
+    folder_path = os.path.join("../../models/" + data_type, save_name)
     os.makedirs(folder_path, exist_ok=True)
     
     # Save the model
