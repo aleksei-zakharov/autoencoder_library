@@ -7,6 +7,7 @@ def plot_latent_space_2d_values(model,
                                 x,
                                 y=None,
                                 vae_latent_type=None,
+                                data_type='mnist',  # type = 'mnist' or 'vol'
                                 save_name=None):
     # Because our latent space is two-dimensional, there are a few cool visualizations that can be done at this point. One is to look at the neighborhoods of different classes on the latent 2D plane
     if vae_latent_type is None:
@@ -35,14 +36,11 @@ def plot_latent_space_2d_values(model,
     # Save plot
     if save_name is not None:
         # Make a folder
-        folder_path = '../../reports/mnist'
+        folder_path = '../../reports/' + data_type
         os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
         # Save plot if the file doesn't exist
-        file_path = os.path.join(folder_path, save_name + '_lat_sp_2d.png')
-        if os.path.exists(file_path):
-            raise FileExistsError(f"The file '{file_path}' already exists.")
-        else:
-            plt.savefig(file_path)
+        file_path = os.path.join(folder_path, save_name + '_2dLatSp_' + vae_latent_type + '.png')
+        plt.savefig(file_path)
 
     # Display plot
     plt.show()
