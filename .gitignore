@@ -3,3 +3,5 @@ venv
 *.png
 *.keras
 *.pkl
+_*.ipynb
+*.gif
