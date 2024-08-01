@@ -16,32 +16,53 @@ def plot_surface_for_diff_z(model,
                             z_max=3,
                             z_points=31,
                             fps=5,
+                            rot_angle=0, 
                             name=None):
     
     folder_path = '../../reports/vol/gifs/'
     z_space = np.linspace(z_min, z_max, z_points)
+
+
     # Find minimum and maximum vol values to have the same z ax for all plots with diverse z values
     max_vol = -float('inf')
     min_vol = float('inf')
     for idx, z in enumerate(z_space):
-        all_z_vals[z_idx] = z
+        # Rotation of z0 and z1 vectors
+        if z_idx == 0:
+            all_z_vals[0] = z * np.cos(rot_angle / 180 * np.pi)
+            all_z_vals[1] = z * np.sin(rot_angle / 180 * np.pi)
+        else:
+            all_z_vals[0] = z * np.sin(rot_angle / 180 * np.pi)
+            all_z_vals[1] = - z * np.cos(rot_angle / 180 * np.pi)
+
         norm_predictions = model.decoder.predict(np.array([all_z_vals]), verbose=0)[0]
         predictions = normalizer.denormalize(norm_predictions)
         max_vol = max(predictions.max(), max_vol)
         min_vol = min(predictions.min(), min_vol)     
+        
+    # Create values for x and y axes
+    x_space = np.arange(len(x_labels))
+    y_space = np.arange(len(y_labels))
+    X, Y = np.meshgrid(x_space, y_space)
 
     # Create and save plots for different z values
     for idx, z in enumerate(z_space):
         # Calculate predictions via our model
-        all_z_vals[z_idx] = z
+
+        # Rotation of z0 and z1 vectors
+        if z_idx == 0:
+            all_z_vals[0] = z * np.cos(rot_angle / 180 * np.pi)
+            all_z_vals[1] = z * np.sin(rot_angle / 180 * np.pi)
+        else:
+            all_z_vals[0] = z * np.sin(rot_angle / 180 * np.pi)
+            all_z_vals[1] = - z * np.cos(rot_angle / 180 * np.pi)
+
         norm_predictions = model.decoder.predict(np.array([all_z_vals]), verbose=0)[0]
         predictions = normalizer.denormalize(norm_predictions)
+
         # Create plots
-        x_space = np.arange(len(x_labels))
-        y_space = np.arange(len(y_labels))
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')  # Create a 3D subplot
-        X, Y = np.meshgrid(x_space, y_space)
         surf = ax.plot_surface(X, Y, predictions, cmap=plt.get_cmap('Spectral_r'), linewidth=0, antialiased=False)  # cmap='Spectral' # cmap='coolwarm'
         fig.colorbar(surf, shrink=0.5, aspect=10)
         ax.set_xlabel('swap tenors')
