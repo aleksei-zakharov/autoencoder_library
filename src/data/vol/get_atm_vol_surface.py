@@ -39,4 +39,10 @@ def get_atm_vol_surface():
             
             atm_data_surf[i, idx1, idx2] = df.iloc[i, j]
 
-    return atm_data_surf, uniq_opt_tenors, uniq_swap_tenors
+    dates = [i.date() for i in df.index]
+
+    return atm_data_surf, \
+           uniq_opt_tenors, \
+           uniq_swap_tenors, \
+           dates
+              
