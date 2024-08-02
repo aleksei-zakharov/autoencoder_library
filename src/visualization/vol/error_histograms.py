@@ -20,6 +20,10 @@ def error_histograms(model,
         avg_errors[i] = (diff**2).mean()**0.5  # error is deviation from zero (not from mean)
         max_errors[i] = (diff**2).max()**0.5  # error is deviation from zero (not from mean)
 
+    print('Average Error: mean ',   np.mean(avg_errors))
+    print('Average Error: median ', np.median(avg_errors))
+    print('Max Error: mean ',   np.mean(max_errors))
+    print('Max Error: median ', np.median(max_errors))
 
     fig, ax = plt.subplots(1, 2, figsize=(15,5))
 
