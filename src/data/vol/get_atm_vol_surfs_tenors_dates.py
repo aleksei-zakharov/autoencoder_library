@@ -1,9 +1,9 @@
 import numpy as np
 
-from src.data.vol.get_atm_vols import get_atm_vols
+from src.data.vol.get_atm_vols_df import get_atm_vols_df
 
-def get_atm_vol_surface():
 
+def get_atm_vol_surfs_tenors_dates():
 
     def days_in_label(s):
         if s[-1] == 'Y':
@@ -15,8 +15,7 @@ def get_atm_vol_surface():
         else:
             return 'Error'
 
-
-    df = get_atm_vols()
+    df = get_atm_vols_df()
 
     opt_tenors = [i[0] for i in df.columns.str.split('_')]
     uniq_opt_tenors = np.unique(opt_tenors)
