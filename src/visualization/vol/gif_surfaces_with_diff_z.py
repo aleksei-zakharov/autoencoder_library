@@ -6,7 +6,7 @@ import os
 from IPython.display import Image, display
 
 
-def plot_surface_for_diff_z(model,
+def gif_surfaces_with_diff_z(model,
                             normalizer,
                             all_z_vals,
                             z_idx,
