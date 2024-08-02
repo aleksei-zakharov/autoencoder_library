@@ -55,6 +55,9 @@ def preprocess_vol_cube():
     # Drop NaN data
     df_vols.dropna(axis='index', how='any', inplace=True)
 
+    #  Drop all rows where there is at least one zero value in a row
+    df_vols = df_vols.loc[(df_vols!=0).all(axis=1)]
+
     # Rename the columns
     df_vols.columns = [tenor_tenor_skew(x) for x in df_vols.columns]
     # df = df.reindex(sorted(df.columns), axis=1)  # sorting of columns
