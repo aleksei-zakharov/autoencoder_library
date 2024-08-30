@@ -21,7 +21,10 @@ def plot_predictions_from_2d_latent_space(model,
             ax = plt.subplot(n_cols, n_cols, n_cols * n_row + n_col + 1)
             x = latent_space_x[n_col]
             y = latent_space_y[n_row]
-            img = model.decoder.predict(np.array([[x, y]]), verbose=0)
+            if model.model_type in ['vae', 'ae']:
+                img = model.decoder.predict(np.array([[x, y]]), verbose=0)
+            elif model.model_type == 'pca':
+                img = model.inverse_transform(np.array([[x, y]]))
             plt.imshow(img.reshape(28, 28))
             plt.gray()
             ax.get_xaxis().set_visible(False)
