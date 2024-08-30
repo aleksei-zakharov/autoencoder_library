@@ -46,8 +46,6 @@ def gif_vol_cube_by_dates(data,
                                     vmax=max_vol)  # cmap='Spectral' # cmap='coolwarm'       
 
             # ax.view_init(elev=25, azim=315)  # change the viewpoint
-            # if j == strk_num - 1:
-            #     fig.colorbar(surf, shrink=0.5, aspect=10, location="right")
             ax.set_xlabel('swap tenors', fontsize = TICK_SIZE)
             ax.set_xticks(ticks=x_space, labels=x_labels, size=TICK_SIZE)
             ax.set_ylabel('option tenors', fontsize = TICK_SIZE) 
