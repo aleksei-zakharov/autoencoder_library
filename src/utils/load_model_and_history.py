@@ -3,8 +3,9 @@ import os
 import pickle
 
 
-def load_model_and_history(name):
-    folder_path = os.path.join("../../models/mnist", name)
+def load_model_and_history(name,
+                           data_type='mnist'):
+    folder_path = os.path.join("../../models/" + data_type, name)
 
     # Load the model
     model_file_path = os.path.join(folder_path, 'model.keras')
