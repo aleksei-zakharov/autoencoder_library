@@ -8,3 +8,12 @@ SAVE_ATM_VOLS_FILE_PATH = GLOBAL_DATA_PATH + 'processed/atm_vol.xlsx'
 SAVE_ATM_VOLS_FILE_SHEET_NAME = 'atm_vol'
 SAVE_VOL_CUBE_FILE_PATH = GLOBAL_DATA_PATH + 'processed/vol_cube.xlsx'
 SAVE_VOL_CUBE_FILE_SHEET_NAME = 'vol_cube'
+
+
+# to have the same colourbar for the whole project with vols
+MIN_VOL_ON_GRAPHS = -100
+MAX_VOL_ON_GRAPHS = 246
+
+
+# missed value
+MISSED_VALUE = -100
