@@ -44,9 +44,9 @@ class AeVanilla(keras.Model):
         with tf.GradientTape() as tape:
             # Loss
             predictions = self.decoder(self.encoder(data))
-            if self.loss_type == 'bce':
+            if self.loss_type == 'mse':
                 total_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(predictions)), axis=1)
-            elif self.loss_type == 'mse':
+            elif self.loss_type == 'bce':
                 total_loss = binary_crossentropy(Flatten()(data), Flatten()(predictions))
                 total_loss *= np.prod(self.input_shape)
             total_loss = ops.mean(total_loss)
@@ -65,9 +65,9 @@ class AeVanilla(keras.Model):
         with tf.GradientTape():
             # Loss
             predictions = self.decoder(self.encoder(data))
-            if self.loss_type == 'bce':
+            if self.loss_type == 'mse':
                 total_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(predictions)), axis=1)
-            elif self.loss_type == 'mse':
+            elif self.loss_type == 'bce':
                 total_loss = binary_crossentropy(Flatten()(data), Flatten()(predictions))
                 total_loss *= np.prod(self.input_shape)
             total_loss = ops.mean(total_loss)

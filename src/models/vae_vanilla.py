@@ -52,9 +52,9 @@ class VaeVanilla(Model):
             # Reconstruction loss
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
-            if self.loss_type == 'bce':
+            if self.loss_type == 'mse':
                 reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)), axis=1)
-            elif self.loss_type == 'mse':
+            elif self.loss_type == 'bce':
                 reconstruction_loss = binary_crossentropy(Flatten()(data), Flatten()(reconstruction))
                 reconstruction_loss *= np.prod(self.input_shape)
             # Kullback-leibler loss
@@ -83,9 +83,9 @@ class VaeVanilla(Model):
             # Reconstruction loss
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
-            if self.loss_type == 'bce':
+            if self.loss_type == 'mse':
                 reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)), axis=1)
-            elif self.loss_type == 'mse':
+            elif self.loss_type == 'bce':
                 reconstruction_loss = binary_crossentropy(Flatten()(data), Flatten()(reconstruction))
                 reconstruction_loss *= np.prod(self.input_shape)
             # Kullback-leibler loss
