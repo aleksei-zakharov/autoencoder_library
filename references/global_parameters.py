@@ -15,5 +15,5 @@ MIN_VOL_ON_GRAPHS = -100
 MAX_VOL_ON_GRAPHS = 246
 
 
-# missed value
+# missed volatility value
 MISSED_VALUE = -100
