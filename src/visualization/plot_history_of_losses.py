@@ -1,20 +1,21 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 
 def plot_history_of_losses(history,
                            data_type='mnist',  # type = 'mnist' or 'vol'
                            save_name=None):
     
-    # graph shows losses for train and test datasets
-    plt.plot(history.history['total_loss'])
+    # graph shows logarithm of total losses for train and test datasets
+    plt.plot(np.log(history.history['total_loss']))
     if 'val_total_loss' in history.history.keys():
-        plt.plot(history.history['val_total_loss'])
+        plt.plot(np.log(history.history['val_total_loss']))
         plt.legend(['train', 'test'], loc='upper right')
     else:
         plt.legend(['train'], loc='upper right')
     plt.title('model loss')
-    plt.ylabel('loss')
+    plt.ylabel('log(loss)')
     plt.xlabel('epoch')
 
     # Save plot
