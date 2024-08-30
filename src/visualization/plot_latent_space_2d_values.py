@@ -22,11 +22,13 @@ def plot_latent_space_2d_values(model,
             __, __, x_encoded = model.encoder.predict(x, verbose=0)  # z_mean, z_logvar, z
     elif model.model_type == 'ae':
         x_encoded = model.encoder.predict(x, verbose=0)  # z
-
-    plt.figure(figsize=(12, 6))
-    plt.xlabel('first latent space variable')
-    plt.ylabel('second latent space variable')
-    plt.title('Latent space (' + vae_latent_type + ' values) of real data')
+    elif model.model_type == 'pca':
+        x_encoded = model.transform(x)  # project the dataset onto the principal components
+        
+    plt.figure(figsize=(8, 6))
+    plt.xlabel('first latent space variable (z0)')
+    plt.ylabel('second latent space variable (z1)')
+    plt.title('Latent space (' + vae_latent_type + ' values) encoded based on the NN inputs')
     if y is None:
         plt.scatter(x_encoded[:,0], x_encoded[:,1], s=1)  # s=2 initially
     else:
@@ -39,7 +41,7 @@ def plot_latent_space_2d_values(model,
         folder_path = '../../reports/' + data_type
         os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
         # Save plot if the file doesn't exist
-        file_path = os.path.join(folder_path, save_name + '_2dLatSp_' + vae_latent_type + '.png')
+        file_path = os.path.join(folder_path, save_name + '_2d_' + vae_latent_type + '.png')
         plt.savefig(file_path)
 
     # Display plot
