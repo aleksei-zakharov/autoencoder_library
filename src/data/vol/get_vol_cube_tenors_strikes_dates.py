@@ -16,12 +16,12 @@ def get_vol_cube_tenors_strikes_dates():
             return 'Error'
         
     def bp_in_skew(skew):
-        if skew[0] == 'A':
+        if len(skew) == 3:      # skew=ATM
             return 0
-        elif skew[0] == 'N':
-            return -int(skew[1:-2])
-        else:
-            return int(skew[1:-2])
+        elif skew[3] == '-':    # e.g. skew='ATM-50bp'
+            return -int(skew[4:-2])
+        else:                   # e.g. skew='ATM+50bp'
+            return int(skew[4:-2])
 
     df = get_vol_cube_df()
 

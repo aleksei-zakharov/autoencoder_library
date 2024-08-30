@@ -24,9 +24,9 @@ def preprocess_vol_cube():
         if name[skew_idx] == 'A':
             skew_str = 'ATM'
         elif name[skew_idx] == 'P':
-            skew_str = 'P' + shift_bp
+            skew_str = 'ATM+' + shift_bp
         else:
-            skew_str = 'N' + shift_bp
+            skew_str = 'ATM-' + shift_bp
         
         return name[3:sep_idx] + '_' + name[sep_idx + 1 : skew_idx] + '_' + skew_str
 
