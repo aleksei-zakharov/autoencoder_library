@@ -37,11 +37,11 @@ def plot_latent_space_1d_values(model,
 
     # Save plot
     if save_name is not None:
-        # Make a folder
+        # Make a folder if it doesn't exist
         folder_path = '../../reports/' + data_type
-        os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
-        # Save plot if the file doesn't exist
-        file_path = os.path.join(folder_path, save_name + '_1dLatSp_.png')
+        os.makedirs(folder_path, exist_ok=True)
+        # Save plot
+        file_path = os.path.join(folder_path, save_name + '_1d_' + vae_latent_type + '.png')
         plt.savefig(file_path)
 
     # Display plot
