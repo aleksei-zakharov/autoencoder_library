@@ -3,38 +3,22 @@ import matplotlib.pyplot as plt
 import os
 
 
-def error_histograms(model,
-                     data,
-                     normalizer,
+def error_histograms(predictions,  # not normalized
+                     data,  # not normalized
                      save_name=None):
 
+    errors = data - predictions
+    errors = errors.flatten()
 
-    data_norm = normalizer.normalize(data)
-    predictions = normalizer.denormalize(model.predict(x=data_norm, verbose=0))
+    print('Mean error',   round(np.std(errors), 2))
+    print('Max error', round(np.max(abs(errors)), 2))
 
-    avg_errors = np.zeros(data.shape[0])
-    max_errors = np.zeros(data.shape[0])
+    plt.figure(figsize=(6,5))
 
-    for i, val in enumerate(data):
-        diff = val - predictions[i]
-        avg_errors[i] = (diff**2).mean()**0.5  # error is deviation from zero (not from mean)
-        max_errors[i] = (diff**2).max()**0.5  # error is deviation from zero (not from mean)
-
-    print('Average Error: mean ',   np.mean(avg_errors))
-    print('Average Error: median ', np.median(avg_errors))
-    print('Max Error: mean ',   np.mean(max_errors))
-    print('Max Error: median ', np.median(max_errors))
-
-    fig, ax = plt.subplots(1, 2, figsize=(15,5))
-
-    ax[0].hist(avg_errors, 40)
-    ax[0].set_title('distribution of the Average Error between real data and predictions')
-    ax[0].set_xlabel('bp')
-
-    ax[1].hist(max_errors, 40)
-    ax[1].set_title('distribution of the Max Error between real data and predictions')
-    ax[1].set_xlabel('bp')
-
+    plt.hist(abs(errors), 40)
+    plt.title('Histogram of absolute errors over all dates and data points')
+    plt.xlabel('bp')
+    plt.ylabel('observations')
 
     # Save plot
     if save_name is not None:
@@ -42,7 +26,7 @@ def error_histograms(model,
         folder_path = '../../reports/vol'
         os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
         # Save plot if the file doesn't exist
-        file_path = os.path.join(folder_path, save_name + 'error_histograms.png')
+        file_path = os.path.join(folder_path, save_name + '_error_histograms.png')
         plt.savefig(file_path)
     # Display the plot
     plt.show()
