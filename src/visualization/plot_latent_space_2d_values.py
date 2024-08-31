@@ -5,9 +5,9 @@ from matplotlib import cm  # to change color scheme
 
 def plot_latent_space_2d_values(model, 
                                 x,
-                                data_type=None,
                                 y=None,
                                 vae_latent_type=None,
+                                data_type=None,
                                 save_name=None):
     """
     Draw latent space scatter plot of latent space variables calculated from inputs
@@ -18,12 +18,12 @@ def plot_latent_space_2d_values(model,
     model: the model such as autoencoder (keras.Model), variational autoencoder (keras.Model) or PCA method
     
     x: the inputs of the model (mnist dataset of handwritten-digit images or volatility cube data)
-    
-    data_type: type of data to be plotted. Possible values: 'mnist' or 'vol'. The plot is saved in the folder with this name
 
     y: the labels of input data. It is used only for mnist dataset: the real digits such as 0, 1, ..., 9.
 
     vae_latent_type: type of latent space variable that must be plotted. Possible values: 'z', 'z_mean', 'z_logvar'.
+
+    data_type: type of data to be plotted. Possible values: 'mnist' or 'vol'. The plot is saved in the folder with this name
 
     save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
     """
