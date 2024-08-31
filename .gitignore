@@ -1,8 +1,6 @@
 venv
 *.pyc
 *.png
-*.keras
-*.pkl
 _*.ipynb
 *.gif
 *.xlsx
