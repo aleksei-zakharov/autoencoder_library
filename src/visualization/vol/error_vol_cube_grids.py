@@ -6,13 +6,13 @@ from references.global_parameters import MIN_VOL_ON_GRAPHS, MAX_VOL_ON_GRAPHS
 
 
 def error_vol_cube_grids(predictions,  
-                        data,          
-                        x_labels,
-                        y_labels,
-                        uniq_strikes, 
-                        strikes, 
-                        error_type='mse',
-                        save_name=None):
+                         data,          
+                         x_labels,
+                         y_labels,
+                         uniq_strikes, 
+                         strikes, 
+                         error_type='mse',
+                         save_name=None):
     """
     Plot the error between the reconstructed volatility cubes and real vol cubes on several grid graphs (1 grid graph for 1 strike)
 

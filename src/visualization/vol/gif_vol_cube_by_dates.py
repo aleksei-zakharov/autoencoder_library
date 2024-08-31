@@ -8,12 +8,12 @@ from PIL import Image as ImagePIL
 
 
 def gif_vol_cube_by_dates(data,
-                           dates,
-                           x_labels,
-                           y_labels,
-                           strikes,
-                           uniq_strikes
-                           ):
+                          dates,
+                          x_labels,
+                          y_labels,
+                          strikes,
+                          uniq_strikes
+                          ):
     """
     Create a gif which display vol cube structure for different z0 / z1 values 
 

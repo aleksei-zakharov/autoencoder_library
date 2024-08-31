@@ -7,11 +7,11 @@ from references.global_parameters import MISSED_VALUE
 
 
 def vol_cube_grids(data,
-                    x_labels,
-                    y_labels,
-                    uniq_strikes, 
-                    strikes,
-                    save_name=None):
+                   x_labels,
+                   y_labels,
+                   uniq_strikes, 
+                   strikes,
+                   save_name=None):
     """
     Plot volatility cube data on several grid graphs (1 grid graph for 1 strike)
 
