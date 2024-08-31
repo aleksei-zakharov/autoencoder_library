@@ -3,9 +3,22 @@ import matplotlib.pyplot as plt
 import os
 
 
-def error_histograms(predictions,  # not normalized
-                     data,  # not normalized
+def error_histograms(predictions,
+                     data,
                      save_name=None):
+
+    """
+    Create a histogram of the errors between the reconstructed volatility cubes and real vol cubes and print mean and max errors
+
+    
+    Parameters:
+
+    predictions: non-normalized reconstructed vol cube data
+    
+    data: non-normalized vol cube true data
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
 
     errors = data - predictions
     errors = errors.flatten()
@@ -28,5 +41,6 @@ def error_histograms(predictions,  # not normalized
         # Save plot if the file doesn't exist
         file_path = os.path.join(folder_path, save_name + '_error_histograms.png')
         plt.savefig(file_path)
+
     # Display the plot
     plt.show()

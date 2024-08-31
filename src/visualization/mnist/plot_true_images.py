@@ -6,8 +6,20 @@ def plot_true_images(N,
                      x,
                      y,
                      save_name=None):
-    # Graph shows comparison between original pictures and predicted pictures
-    # N = 5  # number of samples to be shown for each value 0, 1, 2, ... 9
+    """
+    Draw N samples of original images of handwritten digits for each of 0, 1, ..., 9 digits
+
+    
+    Parameters:
+
+    N: number of samples to be shown for each value 0, 1, 2, ... 9
+    
+    x: mnist dataset of handwritten-digit images
+
+    y: the labels of handwritten-digit images data: the real digits such as 0, 1, ..., 9.
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
 
     plt.figure(figsize=(5, 1.7))
     for n_col in range(10):  # digits 0, 1, 2, ..., 9

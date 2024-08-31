@@ -19,7 +19,7 @@ def gif_vol_cube_generate(model,
                           delete_pngs=True,
                           name=None):
     """
-    Draw latent space scatter plot of latent space variables calculated from inputs
+    Create a gif which display vol cube structure for different z0 / z1 values 
 
     
     Parameters:
@@ -41,8 +41,6 @@ def gif_vol_cube_generate(model,
     fps: the number of gif frames in 1 second (the higher, the faster gif goes)
 
     delete_pngs: if True, delete all created pngs files that were used to create a gif
-
-    vae_latent_type: type of latent space variable that must be plotted. Possible values: 'z', 'z_mean', 'z_logvar'.
 
     name: the name that is used here to name the saved gif. If it is not None, the plot is saved in the gif folder 
     """

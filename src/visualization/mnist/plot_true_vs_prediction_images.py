@@ -7,12 +7,26 @@ def plot_true_vs_prediction_images(model,
                                    x,
                                    y,
                                    save_name=None):
-    # Graph shows comparison between original pictures and predicted pictures
+    """
+    Draw N samples of comparison between original images of handwritten digits and reconstructed images for each of 0, 1, ..., 9 digits
+
+    
+    Parameters:
+
+    model: the model such as autoencoder (keras.Model), variational autoencoder (keras.Model) or PCA method
+    
+    x: the inputs of the model (mnist dataset of handwritten-digit images)
+
+    y: the labels of input data. It is used only for mnist dataset: the real digits such as 0, 1, ..., 9.
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
+
     N = 5  # number of samples to be shown for each value 0, 1, 2, ... 9
 
     plt.figure(figsize=(13, 3.2))
     for n_col in range(10):  # digits 0, 1, 2, ..., 9
-        idx = 0 # index of current element in X_train
+        idx = 0 # index of current element in x_train
         for n_row in range(N):  # samples
             # Find next picture showing n_row value (starting from idx index)
             while y[idx] != n_col:

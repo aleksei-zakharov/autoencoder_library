@@ -10,6 +10,25 @@ def plot_predictions_from_2d_latent_space(model,
                                           ymin, 
                                           ymax,
                                           save_name=None):
+    
+    """
+    Plot reconstructed images of handwritten digits for different latent space variables values.
+
+    
+    Parameters:
+
+    model: the model such as autoencoder (keras.Model), variational autoencoder (keras.Model) or PCA method
+
+    n_cols: number of z0 values in interval [xmin, xmax] and z1 values in interval [ymin, ymax]
+    
+    xmin/xmax: images are constructed for latent space values z0 in interval [xmin, xmax]
+
+    ymin/ymax: images are constructed for latent space values z0 in interval [xmin, xmax]
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
+
+
     # Model can be ae or vae
     latent_space_x = np.linspace(xmin, xmax, n_cols)
     latent_space_y = np.linspace(ymax, ymin, n_cols)

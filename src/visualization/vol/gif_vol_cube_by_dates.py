@@ -14,6 +14,24 @@ def gif_vol_cube_by_dates(data,
                            strikes,
                            uniq_strikes
                            ):
+    """
+    Create a gif which display vol cube structure for different z0 / z1 values 
+
+    
+    Parameters:
+
+    data: list of volatility cubes for different dates
+
+    dates: the list of dates
+    
+    x_labels: list of labels of the x-axis on the grid graph (denotes swap tenors)
+
+    y_labels: list of labels of the y-axis on the grid graph (denotes option tenors)
+
+    uniq_strikes: list of strikes (for each strike, we construct a grid graph)
+
+    strikes: list of all strikes in volatility data structure
+    """
 
     SUBTITLE_SIZE = 10
     TICK_SIZE = 8
@@ -43,7 +61,7 @@ def gif_vol_cube_by_dates(data,
                                     linewidth=0, 
                                     antialiased=False, 
                                     vmin=min_vol, 
-                                    vmax=max_vol)  # cmap='Spectral' # cmap='coolwarm'       
+                                    vmax=max_vol) 
 
             # ax.view_init(elev=25, azim=315)  # change the viewpoint
             ax.set_xlabel('swap tenors', fontsize = TICK_SIZE)
@@ -58,6 +76,7 @@ def gif_vol_cube_by_dates(data,
         file_path = folder_path + 'image_' + f"{i:04}" +'.png'
         plt.savefig(file_path)  # save a plot as png image
         plt.close(fig)  # just not to show the graphs in python
+
         # Crop the image
         img = ImagePIL.open(file_path)
         width, height = img.size
@@ -69,6 +88,7 @@ def gif_vol_cube_by_dates(data,
     images = []
     for filename in sorted(glob.glob(folder_path + '*.png')):
         images.append(imageio.imread(filename))
+
     # Save a gif
     gif_file_path = folder_path + 'plot_vol_cube_by_dates.gif'
     imageio.mimsave(gif_file_path, images, loop=0, fps=5)  # loop=0 means that gif will be played non-stop ; fps=100 is maximum

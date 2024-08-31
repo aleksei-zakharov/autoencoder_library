@@ -5,14 +5,36 @@ import os
 from references.global_parameters import MIN_VOL_ON_GRAPHS, MAX_VOL_ON_GRAPHS
 
 
-def error_vol_cube_grids(predictions,  # not normalized
-                        data,          # not normalized
+def error_vol_cube_grids(predictions,  
+                        data,          
                         x_labels,
                         y_labels,
                         uniq_strikes, 
                         strikes, 
-                        error_type='mse',   # mse, mean or abs_max
+                        error_type='mse',
                         save_name=None):
+    """
+    Plot the error between the reconstructed volatility cubes and real vol cubes on several grid graphs (1 grid graph for 1 strike)
+
+    
+    Parameters:
+
+    predictions: non-normalized reconstructed vol cube data
+    
+    data: non-normalized vol cube true data
+    
+    x_labels: list of labels of the x-axis on the grid graph (denotes swap tenors)
+
+    y_labels: list of labels of the y-axis on the grid graph (denotes option tenors)
+    
+    uniq_strikes: list of strikes (for each strike, we construct a grid graph)
+
+    strikes: list of all strikes in volatility data structure
+
+    error_type: type of the error (possible values: 'mse', 'mean', 'abs_max')
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
 
     TICK_SIZE = 10
 
@@ -25,7 +47,7 @@ def error_vol_cube_grids(predictions,  # not normalized
 
         # Create grid plot for certain strike     
         errors = np.zeros((len(y_labels), len(x_labels)))
-        for i_y, y in enumerate(y_labels):      # opt tenors
+        for i_y, y in enumerate(y_labels):      # option tenors
             for i_x, x in enumerate(x_labels):  # swap tenors
                 # Calculate error for certain opt tenor and swap tenor
                 diff = predictions[:, i_y, i_x, strk_idx] - data[:, i_y, i_x, strk_idx]

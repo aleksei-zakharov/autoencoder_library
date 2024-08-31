@@ -21,7 +21,38 @@ def gif_vol_cube_for_diff_z(model,
                             fps=3,
                             delete_pngs=True,
                             name=None):
+    """
+    Create a gif which display vol cube structure for different z0 / z1 values 
+
     
+    Parameters:
+
+    model: the variational autoencoder model
+
+    normalizer: normalizer of vol cube data to [0,1] interval and vice versa (src.data.vol.normalizer file)
+
+    all_z_vals: the list of z values based on which we construct volatility cube
+
+    z_idx: index of z value that are changing to construct vol cube
+    
+    x_labels: list of labels of the x-axis on the grid graph (denotes swap tenors)
+
+    y_labels: list of labels of the y-axis on the grid graph (denotes option tenors)
+
+    uniq_strikes: list of strikes (for each strike, we construct a grid graph)
+
+    strikes: list of all strikes in volatility data structure
+
+    z_min / z_max: vol cubes are constructed for all latent space values z in interval [z_min, z_max]
+
+    z_points: number of points between z_min and z_max for which vol cube will be constructed
+
+    fps: the number of gif frames in 1 second (the higher, the faster gif goes)
+
+    delete_pngs: if True, delete all created pngs files that were used to create a gif
+
+    name: the name that is used here to name the saved gif. If it is not None, the plot is saved in the gif folder 
+    """
 
     TICK_SIZE = 8
     SUBTITLE_SIZE = 10
@@ -68,7 +99,7 @@ def gif_vol_cube_for_diff_z(model,
                                     linewidth=0, 
                                     antialiased=False, 
                                     vmin=min_vol, 
-                                    vmax=max_vol)  # cmap='Spectral' # cmap='coolwarm'       
+                                    vmax=max_vol)
 
             # ax.view_init(elev=25, azim=315)  # change the viewpoint
             ax.set_xlabel('swap tenors', fontsize = TICK_SIZE)
@@ -83,13 +114,13 @@ def gif_vol_cube_for_diff_z(model,
         file_path = folder_path + 'image_' + f"{idx:04}" +'.png'
         plt.savefig(file_path)  # save a plot as png image
         plt.close(fig)  # just not to show the graphs in python
+
         # Crop the image
         img = ImagePIL.open(file_path)
         width, height = img.size
         box = (int(0.11 * width), 0, int(0.93 * width), height)  # left, top, right, bottom
         img = img.crop(box)
         img.save(file_path)
-
 
     # Create an array of saved plots
     images = []
