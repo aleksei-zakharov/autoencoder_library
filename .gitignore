@@ -1,6 +1,3 @@
 venv
 *.pyc
-*.png
-_*.ipynb
-*.gif
 *.xlsx
