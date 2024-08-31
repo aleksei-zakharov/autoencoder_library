@@ -5,7 +5,7 @@ from matplotlib import cm  # to change color scheme
 
 def plot_latent_space_2d_values(model, 
                                 x,
-                                data_type,
+                                data_type=None,
                                 y=None,
                                 vae_latent_type=None,
                                 save_name=None):
@@ -57,12 +57,15 @@ def plot_latent_space_2d_values(model,
 
     # Save plot
     if save_name is not None:
-        # Make a folder if it doesn't exist
-        folder_path = '../../reports/' + data_type
-        os.makedirs(folder_path, exist_ok=True)
-        # Save plot
-        file_path = os.path.join(folder_path, save_name + '_2d_' + vae_latent_type + '.png')
-        plt.savefig(file_path)
+        if data_type is None:
+            raise NameError('data_type parameter was not defined (possible values are \'mnist\' or \'vol\')')
+        else:
+            # Make a folder if it doesn't exist
+            folder_path = '../../reports/' + data_type
+            os.makedirs(folder_path, exist_ok=True)
+            # Save plot
+            file_path = os.path.join(folder_path, save_name + '_2d_' + vae_latent_type + '.png')
+            plt.savefig(file_path)
 
     # Display plot
     plt.show()

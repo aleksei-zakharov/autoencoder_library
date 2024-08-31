@@ -4,7 +4,7 @@ import numpy as np
 
 
 def plot_history_of_losses(history,
-                           data_type,
+                           data_type=None,
                            save_name=None):
     """
     Plot history of log of losses for train and test dataset
@@ -32,12 +32,15 @@ def plot_history_of_losses(history,
 
     # Save plot
     if save_name is not None:
-        # Make a folder if it doesn't exist
-        folder_path = '../../reports/' + data_type
-        os.makedirs(folder_path, exist_ok=True) 
-        # Save plot
-        file_path = os.path.join(folder_path, save_name + 'history.png')
-        plt.savefig(file_path)
+        if data_type is None:
+            raise NameError('data_type parameter was not defined (possible values are \'mnist\' or \'vol\')')
+        else:
+            # Make a folder if it doesn't exist
+            folder_path = '../../reports/' + data_type
+            os.makedirs(folder_path, exist_ok=True) 
+            # Save plot
+            file_path = os.path.join(folder_path, save_name + 'history.png')
+            plt.savefig(file_path)
     
     # Display plot
     plt.show()
