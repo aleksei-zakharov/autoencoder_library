@@ -6,16 +6,34 @@ from references.global_parameters import MIN_VOL_ON_GRAPHS, MAX_VOL_ON_GRAPHS
 from references.global_parameters import MISSED_VALUE
 
 
-def vol_cube_grids(data,  # not normalized
+def vol_cube_grids(data,
                     x_labels,
                     y_labels,
                     uniq_strikes, 
                     strikes,
                     save_name=None):
+    """
+    Plot volatility cube data on several grid graphs (1 grid graph for 1 strike)
+
+    
+    Parameters:
+
+    data: non-normalized vol cube data to be displayed on the grid graph
+    
+    x_labels: list of labels of the x-axis on the grid graph (denotes swap tenors)
+
+    y_labels: list of labels of the y-axis on the grid graph (denotes option tenors)
+    
+    uniq_strikes: list of strikes (for each strike, we construct a grid graph)
+
+    strikes: list of all strikes in volatility data structure
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
 
     TICK_SIZE = 10
     
-    nan_val_flag = MISSED_VALUE in data
+    nan_val_flag = MISSED_VALUE in data   # denotes whether there are missed values in data
     
     # Create grid subplots for all strikes
     fig = plt.figure(figsize=(22,5.5))
@@ -29,7 +47,7 @@ def vol_cube_grids(data,  # not normalized
 
         # Create grid plot for certain strike     
         errors = np.zeros((len(y_labels), len(x_labels)))
-        for i_y, y in enumerate(y_labels):      # opt tenors
+        for i_y, y in enumerate(y_labels):      # option tenors
             for i_x, x in enumerate(x_labels):  # swap tenors
                 # Calculate error for certain opt tenor and swap tenor
                 errors[i_y, i_x] = data[i_y, i_x, strk_idx]
