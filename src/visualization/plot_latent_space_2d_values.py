@@ -5,15 +5,34 @@ from matplotlib import cm  # to change color scheme
 
 def plot_latent_space_2d_values(model, 
                                 x,
+                                data_type,
                                 y=None,
                                 vae_latent_type=None,
-                                data_type='mnist',  # type = 'mnist' or 'vol'
                                 save_name=None):
-    # Because our latent space is two-dimensional, there are a few cool visualizations that can be done at this point. One is to look at the neighborhoods of different classes on the latent 2D plane
+    """
+    Draw latent space scatter plot of latent space variables calculated from inputs
+
+    
+    Parameters:
+
+    model: the model such as autoencoder (keras.Model), variational autoencoder (keras.Model) or PCA method
+    
+    x: the inputs of the model (mnist dataset of handwritten-digit images or volatility cube data)
+    
+    data_type: type of data to be plotted. Possible values: 'mnist' or 'vol'. The plot is saved in the folder with this name
+
+    y: the labels of input data. It is used only for mnist dataset: the real digits such as 0, 1, ..., 9.
+
+    vae_latent_type: type of latent space variable that must be plotted. Possible values: 'z', 'z_mean', 'z_logvar'.
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
+        
     if vae_latent_type is None:
         vae_latent_type = 'z'
 
-    if model.model_type == 'vae':
+    # The calculation of latent space variables for different model types
+    if model.model_type == 'vae':  
         if vae_latent_type == 'z_mean':
             x_encoded, __, __ = model.encoder.predict(x, verbose=0)  # z_mean, z_logvar, z
         elif vae_latent_type == 'z_logvar':
@@ -24,7 +43,8 @@ def plot_latent_space_2d_values(model,
         x_encoded = model.encoder.predict(x, verbose=0)  # z
     elif model.model_type == 'pca':
         x_encoded = model.transform(x)  # project the dataset onto the principal components
-        
+
+    # Plot the latent space variables
     plt.figure(figsize=(8, 6))
     plt.xlabel('first latent space variable (z0)')
     plt.ylabel('second latent space variable (z1)')
@@ -37,10 +57,10 @@ def plot_latent_space_2d_values(model,
 
     # Save plot
     if save_name is not None:
-        # Make a folder
+        # Make a folder if it doesn't exist
         folder_path = '../../reports/' + data_type
-        os.makedirs(folder_path, exist_ok=True)  # make a folder if doesn't exist
-        # Save plot if the file doesn't exist
+        os.makedirs(folder_path, exist_ok=True)
+        # Save plot
         file_path = os.path.join(folder_path, save_name + '_2d_' + vae_latent_type + '.png')
         plt.savefig(file_path)
 
