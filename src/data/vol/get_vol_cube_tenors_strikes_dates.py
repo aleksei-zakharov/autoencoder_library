@@ -1,9 +1,28 @@
-import numpy as np
+# import numpy as np
+from numpy import unique, zeros
 
 from src.data.vol.get_vol_cube_df import get_vol_cube_df
 
 
 def get_vol_cube_tenors_strikes_dates():
+    """
+    Based on dataframe from get_vol_cube_df function,
+    returns volatility cubes, option tenors, swap tenors, strikes and dates
+
+    Returns:
+
+        vol_cube: for each date, we have volatility cube 3D structure that consists
+                of volatility values (in bp) for different option tenors, swap tenors and strikes
+
+        uniq_opt_tenors: list of possible option tenors (second dimension of vol_cube structure)
+
+        uniq_swap_tenors: list of possible swap tenors  (third dimension of vol_cube structure)
+
+        uniq_strikes: list of possible strikes (fourth dimension of vol_cube structure)
+
+        dates: list of dates (first dimension of vol_cube structure)
+
+    """
 
     def days_in_label(s):
         if s[-1] == 'Y':
@@ -16,7 +35,7 @@ def get_vol_cube_tenors_strikes_dates():
             return 'Error'
         
     def bp_in_skew(skew):
-        if len(skew) == 3:      # skew=ATM
+        if len(skew) == 3:      # skew='ATM'
             return 0
         elif skew[3] == '-':    # e.g. skew='ATM-50bp'
             return -int(skew[4:-2])
@@ -25,15 +44,15 @@ def get_vol_cube_tenors_strikes_dates():
 
     df = get_vol_cube_df()
 
-    # Get unique tenors and skews
+    # Get unique tenors and skews out of all dataframe columns
     opt_tenors = [i[0] for i in df.columns.str.split('_')]
-    uniq_opt_tenors = np.unique(opt_tenors)
+    uniq_opt_tenors = unique(opt_tenors)
 
     swap_tenors = [i[1] for i in df.columns.str.split('_')]
-    uniq_swap_tenors = np.unique(swap_tenors)
+    uniq_swap_tenors = unique(swap_tenors)
 
     strikes = [i[2] for i in df.columns.str.split('_')]
-    uniq_strikes = np.unique(strikes)
+    uniq_strikes = unique(strikes)
 
     # Sort tenors and skews
     uniq_opt_tenors = sorted(uniq_opt_tenors, key=days_in_label)
@@ -41,7 +60,7 @@ def get_vol_cube_tenors_strikes_dates():
     uniq_strikes = sorted(uniq_strikes, key=bp_in_skew)
 
     # Create vol cube
-    vol_cube = np.zeros([len(df), len(uniq_opt_tenors), len(uniq_swap_tenors), len(uniq_strikes)])
+    vol_cube = zeros([len(df), len(uniq_opt_tenors), len(uniq_swap_tenors), len(uniq_strikes)])
 
     for i in range(len(df)):
         for j, val in enumerate(df.columns):
