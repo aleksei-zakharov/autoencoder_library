@@ -43,7 +43,7 @@ def scatplot_latent_space_2d_values(model,
         x_encoded = model.transform(x)  # project the dataset onto the principal components
 
     # Plot the latent space variables
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(6, 4.5))
     plt.xlabel(f'latent space variable z{indexes[0]}')
     plt.ylabel(f'latent space variable z{indexes[1]}')
     plt.title('Latent space (' + vae_latent_type + ' values) encoded based on the NN inputs')
