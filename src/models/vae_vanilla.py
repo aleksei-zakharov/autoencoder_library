@@ -11,12 +11,29 @@ from src.models.sampling import Sampling
 
 
 class VaeVanilla(Model):
+    """
+    Plot history of log of losses for train and test dataset
+
+    
+    Parameters:
+
+    history: history from keras.model fitting
+
+    use_log: if True, we use logarithms of total and reconstruction losses.
+    
+    data_type: type of data to be plotted. Possible values: 'mnist' or 'vol'. The plot is saved in the folder with this name
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
+    
     def __init__(self,
                  input_shape,
                  hidden_layers_nodes,  # list,
                  latent_space_dim,
-                 loss_type='bce',  # bce or mse
-                 beta=1):  # recommendation from the article is beta = 4 for bce
+                 loss_type='mse',  # bce or mse
+                 beta=1,           
+                 activation = 'relu',    # relu or leaky_relu 
+                 ):  
         super().__init__()
 
         self.input_shape = input_shape
@@ -24,6 +41,7 @@ class VaeVanilla(Model):
         self.latent_space_dim = latent_space_dim
         self.loss_type = loss_type
         self.beta = beta
+        self.activation = activation
         
         self.encoder = None
         self.decoder = None
@@ -53,15 +71,15 @@ class VaeVanilla(Model):
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
             if self.loss_type == 'mse':
-                reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)), axis=1)
+                reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)))
             elif self.loss_type == 'bce':
                 reconstruction_loss = binary_crossentropy(Flatten()(data), Flatten()(reconstruction))
-                reconstruction_loss *= np.prod(self.input_shape)
+                # reconstruction_loss *= np.prod(self.input_shape)
             # Kullback-leibler loss
             kl_loss = -0.5 * (1 + z_log_var - ops.square(z_mean) - ops.exp(z_log_var))
-            kl_loss = self.beta * ops.sum(kl_loss, axis=1)
+            kl_loss = ops.mean(kl_loss)   # ops.sum(kl_loss, axis=1)
             # Total loss
-            total_loss = ops.mean(reconstruction_loss + kl_loss)
+            total_loss = reconstruction_loss + self.beta * kl_loss
         # Gradient calculation
         grads = tape.gradient(total_loss, self.trainable_weights)
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
@@ -84,15 +102,15 @@ class VaeVanilla(Model):
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
             if self.loss_type == 'mse':
-                reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)), axis=1)
+                reconstruction_loss = ops.mean(ops.square(Flatten()(data) - Flatten()(reconstruction)))
             elif self.loss_type == 'bce':
                 reconstruction_loss = binary_crossentropy(Flatten()(data), Flatten()(reconstruction))
-                reconstruction_loss *= np.prod(self.input_shape)
+                # reconstruction_loss *= np.prod(self.input_shape)
             # Kullback-leibler loss
             kl_loss = -0.5 * (1 + z_log_var - ops.square(z_mean) - ops.exp(z_log_var))
-            kl_loss = self.beta * ops.sum(kl_loss, axis=1)
+            kl_loss = ops.mean(kl_loss)   # ops.sum(kl_loss, axis=1)
             # Total loss
-            total_loss = ops.mean(reconstruction_loss + kl_loss)
+            total_loss = reconstruction_loss + self.beta * kl_loss
         # Update losses
         self.total_loss_tracker.update_state(total_loss)
         self.reconstruction_loss_tracker.update_state(reconstruction_loss)
@@ -112,7 +130,7 @@ class VaeVanilla(Model):
         encoded = Flatten()(encoded)
 
         for nodes in self.hidden_layers_nodes:
-            encoded = Dense(nodes, activation='relu')(encoded)  
+            encoded = Dense(nodes, activation=self.activation)(encoded)  
 
         z_mean = Dense(self.latent_space_dim)(encoded)  # can be from -inf to +inf
         z_log_var = Dense(self.latent_space_dim)(encoded)  # can be from -inf to +inf
@@ -125,7 +143,7 @@ class VaeVanilla(Model):
         decoded = decoded_input
         
         for nodes in reversed(self.hidden_layers_nodes):  # reverse order of hidden layers
-            decoded = Dense(nodes, activation='relu')(decoded)  # because inputs are from 0 to 1
+            decoded = Dense(nodes, activation=self.activation)(decoded)  # because inputs are from 0 to 1
     
         flatten_input_dim = np.prod(self.input_shape)
         decoded = Dense(flatten_input_dim, activation='sigmoid')(decoded)
@@ -146,14 +164,16 @@ class VaeVanilla(Model):
             'hidden_layers_nodes': self.hidden_layers_nodes,
             'latent_space_dim': self.latent_space_dim,
             'loss_type': self.loss_type,
-            'beta': self.beta
+            'beta': self.beta,
+            'activation': self.activation
         })
         return config
 
 
     @classmethod  # to save a model to a file
     def from_config(cls, config):
-        expected_args = ['input_shape', 'hidden_layers_nodes', 'latent_space_dim', 'loss_type', 'beta']
+        expected_args = ['input_shape', 'hidden_layers_nodes', 'latent_space_dim', \
+                         'loss_type', 'beta', 'activation']
         filtered_config = {k: v for k, v in config.items() if k in expected_args}
         return cls(**filtered_config)
 
