@@ -9,6 +9,26 @@ from keras import ops
 
 
 class AeVanilla(keras.Model):
+    """
+    Class for the autoencoder model
+
+    Attributes:
+
+    input_shape:
+    hidden_layers_nodes
+latent_space_dim
+loss_type
+    Methods:
+
+    history: history from keras.model fitting
+
+    use_log: if True, we use logarithms of total and reconstruction losses.
+    
+    data_type: type of data to be plotted. Possible values: 'mnist' or 'vol'. The plot is saved in the folder with this name
+
+    save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
+    """
+
     def __init__(self,
                  input_shape,
                  hidden_layers_nodes,  # list,
