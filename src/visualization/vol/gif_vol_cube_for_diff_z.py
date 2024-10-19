@@ -13,14 +13,13 @@ def gif_vol_cube_for_diff_z(model,
                             z_idx,
                             x_labels,
                             y_labels,
-                            uniq_strikes,
                             strikes,
                             z_min=-3,
                             z_max=3,
                             z_points=31,
                             fps=3,
                             delete_pngs=True,
-                            name=None):
+                            save_name=None):
     """
     Create a gif which display vol cube structure for different z0 / z1 values 
 
@@ -94,7 +93,7 @@ def gif_vol_cube_for_diff_z(model,
         # Create subplots for each strike value
         for strk_idx, strk in enumerate(strikes):
             ax = fig.add_subplot(1, len(strikes), strk_idx + 1, projection='3d')  # Create a 3D subplot    
-            surf = ax.plot_surface(X, Y, predictions[:, :, uniq_strikes.index(strk)], 
+            surf = ax.plot_surface(X, Y, predictions[:, :, strk_idx], 
                                     cmap=plt.get_cmap('Spectral_r'), 
                                     linewidth=0, 
                                     antialiased=False, 
@@ -115,7 +114,7 @@ def gif_vol_cube_for_diff_z(model,
         plt.savefig(file_path)  # save a plot as png image
         plt.close(fig)  # just not to show the graphs in python
 
-        # Crop the image
+        # Crop the image because plt.tight_layout() did not work
         img = ImagePIL.open(file_path)
         width, height = img.size
         box = (int(0.11 * width), 0, int(0.93 * width), height)  # left, top, right, bottom
@@ -128,9 +127,9 @@ def gif_vol_cube_for_diff_z(model,
         images.append(imageio.imread(filename))
         
     # Save a gif
-    if name is None:
-        name = 'vol_cube_for_diff_z' + str(z_idx)
-    imageio.mimsave(folder_path + name + '.gif', images, loop=0, fps=fps)  # loop=0 means that gif will be played non-stop
+    if save_name is None:
+        save_name = 'vol_cube_for_diff_z' + str(z_idx)
+    imageio.mimsave(folder_path + save_name + '.gif', images, loop=0, fps=fps)  # loop=0 means that gif will be played non-stop
     
     # Delete all created png files
     if delete_pngs:
@@ -138,4 +137,4 @@ def gif_vol_cube_for_diff_z(model,
             os.remove(filename)
 
     # Open gif
-    display(Image(folder_path + name + '.gif'))
+    display(Image(folder_path + save_name + '.gif'))
