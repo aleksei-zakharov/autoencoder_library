@@ -5,13 +5,13 @@ import os
 from references.global_parameters import MIN_VOL_ON_GRAPHS, MAX_VOL_ON_GRAPHS
 
 
-def error_vol_cube_grids(predictions,  
+def grids_vol_cube_errors(predictions,  
                          data,          
                          x_labels,
                          y_labels,
-                         uniq_strikes, 
                          strikes, 
                          error_type='mse',
+                         show_title=True,
                          save_name=None):
     """
     Plot the error between the reconstructed volatility cubes and real vol cubes on several grid graphs (1 grid graph for 1 strike)
@@ -39,11 +39,11 @@ def error_vol_cube_grids(predictions,
     TICK_SIZE = 10
 
     # Create grids for all strikes
-    fig = plt.figure(figsize=(22,5.5))
-    fig.suptitle(f'{error_type} error in bp (difference between predictions and real vol surfaces for different strikes)')
+    fig = plt.figure(figsize=(12,3.3))
+    if show_title:
+        fig.suptitle(f'{error_type} error in bp (difference between predictions and real vol surfaces for different strikes)')
 
-    for i_s, strk in enumerate(strikes):
-        strk_idx = uniq_strikes.index(strk)
+    for strk_idx, strk in enumerate(strikes):
 
         # Create grid plot for certain strike     
         errors = np.zeros((len(y_labels), len(x_labels)))
@@ -58,7 +58,7 @@ def error_vol_cube_grids(predictions,
                 elif error_type == 'mean':
                     errors[i_y, i_x] = diff.mean()
         
-        ax = fig.add_subplot(1, len(strikes), i_s + 1)  # Create a 3D subplot    
+        ax = fig.add_subplot(1, len(strikes), strk_idx + 1)  # Create a 3D subplot    
         ax.set_title(strk)
         ax.matshow(errors, 
                    cmap=plt.get_cmap('Spectral_r'), 
@@ -66,12 +66,13 @@ def error_vol_cube_grids(predictions,
                    vmax=MAX_VOL_ON_GRAPHS)
         ax.set_xticks(ticks=range(len(x_labels)), labels=x_labels, size=TICK_SIZE)
         ax.set_yticks(ticks=range(len(y_labels)), labels=y_labels, size=TICK_SIZE)
-        if i_s == 0:
+        if strk_idx == 0:
             ax.set_xlabel('swap tenors')
             ax.set_ylabel('option tenors')
 
         for (x, y), value in np.ndenumerate(errors):
             ax.text(y, x, f"{value:.0f}", va="center", ha="center", color='black')
+    plt.tight_layout()
 
     # Save plot
     if save_name is not None:

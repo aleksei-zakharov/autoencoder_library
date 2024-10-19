@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from matplotlib import cm  # to change color scheme
 
 
-def plot_latent_space_2d_values(model, 
+def scatplot_latent_space_2d_values(model, 
                                 x,
                                 y=None,
-                                vae_latent_type=None,
+                                indexes=[0,1],
+                                vae_latent_type='z',
                                 data_type=None,
                                 save_name=None):
     """
@@ -27,9 +28,6 @@ def plot_latent_space_2d_values(model,
 
     save_name: the name of the trained model that is used here to name the saved plot. If it is not None, the plot is saved in the folder 
     """
-        
-    if vae_latent_type is None:
-        vae_latent_type = 'z'
 
     # The calculation of latent space variables for different model types
     if model.model_type == 'vae':  
@@ -45,16 +43,17 @@ def plot_latent_space_2d_values(model,
         x_encoded = model.transform(x)  # project the dataset onto the principal components
 
     # Plot the latent space variables
-    plt.figure(figsize=(8, 6))
-    plt.xlabel('first latent space variable (z0)')
-    plt.ylabel('second latent space variable (z1)')
+    plt.figure(figsize=(5, 5))
+    plt.xlabel(f'latent space variable z{indexes[0]}')
+    plt.ylabel(f'latent space variable z{indexes[1]}')
     plt.title('Latent space (' + vae_latent_type + ' values) encoded based on the NN inputs')
     if y is None:
-        plt.scatter(x_encoded[:,0], x_encoded[:,1], s=1)  # s=2 initially
+        plt.scatter(x_encoded[:,indexes[0]], x_encoded[:,indexes[1]], s=1)  # s=2 initially
     else:
-        plt.scatter(x_encoded[:,0], x_encoded[:,1], c=y, s=1, cmap=cm.rainbow)  # s=2 initially
+        plt.scatter(x_encoded[:,indexes[0]], x_encoded[:,indexes[1]], c=y, s=1, cmap=cm.rainbow)  # s=2 initially
         plt.colorbar()
-
+    plt.tight_layout()
+    
     # Save plot
     if save_name is not None:
         if data_type is None:

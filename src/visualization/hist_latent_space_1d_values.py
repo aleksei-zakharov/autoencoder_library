@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 
-def plot_latent_space_1d_values(model, 
+def hist_latent_space_1d_values(model, 
                                 x,
                                 y=None,
                                 vae_latent_type=None,
@@ -53,7 +53,8 @@ def plot_latent_space_1d_values(model,
             plt.hist(x_encoded[idxs], bins, alpha=0.5, label=i)
         plt.legend()
     plt.title('Latent space (' + vae_latent_type + ') distribution of real data')
-
+    plt.tight_layout()
+    
     # Save plot
     if save_name is not None:
         if data_type is None:
