@@ -11,8 +11,7 @@ def gif_vol_cube_by_dates(data,
                           dates,
                           x_labels,
                           y_labels,
-                          strikes,
-                          uniq_strikes
+                          strikes
                           ):
     """
     Create a gif which display vol cube structure for different z0 / z1 values 
@@ -54,7 +53,7 @@ def gif_vol_cube_by_dates(data,
 
         # Create subplots for each strike value
         for strk_idx, strk in enumerate(strikes):
-            surface = data[i][:, :, uniq_strikes.index(strk)]
+            surface = data[i][:, :, strk_idx]
             ax = fig.add_subplot(1, strikes_len, strk_idx + 1, projection='3d')  # Create a 3D subplot    
             surf = ax.plot_surface(X, Y, surface, 
                                     cmap=plt.get_cmap('Spectral_r'), 
