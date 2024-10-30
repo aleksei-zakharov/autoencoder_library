@@ -31,7 +31,8 @@ class VaeVanilla(Model):
                  hidden_layers_nodes,  # list,
                  latent_space_dim,
                  loss_type='mse',  # bce or mse
-                 beta=1,           
+                 beta=1,         
+                 seed=0,  
                  activation = 'relu',    # relu or leaky_relu 
                  ):  
         super().__init__()
@@ -41,6 +42,7 @@ class VaeVanilla(Model):
         self.latent_space_dim = latent_space_dim
         self.loss_type = loss_type
         self.beta = beta
+        self.seed = seed
         self.activation = activation
         
         self.encoder = None
@@ -123,7 +125,7 @@ class VaeVanilla(Model):
     
 
     def _build(self):
-        keras.utils.set_random_seed(0)
+        keras.utils.set_random_seed(self.seed)
         input_image = Input(shape=(self.input_shape))  
         # Create a graph of calculation for encoder using keras.layers.Dense layers
         encoded = input_image
@@ -165,6 +167,7 @@ class VaeVanilla(Model):
             'latent_space_dim': self.latent_space_dim,
             'loss_type': self.loss_type,
             'beta': self.beta,
+            'seed': self.seed,
             'activation': self.activation
         })
         return config
@@ -173,7 +176,7 @@ class VaeVanilla(Model):
     @classmethod  # to save a model to a file
     def from_config(cls, config):
         expected_args = ['input_shape', 'hidden_layers_nodes', 'latent_space_dim', \
-                         'loss_type', 'beta', 'activation']
+                         'loss_type', 'beta', 'seed', 'activation']
         filtered_config = {k: v for k, v in config.items() if k in expected_args}
         return cls(**filtered_config)
 
